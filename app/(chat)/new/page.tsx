@@ -1,4 +1,5 @@
 import { createSupabaseServerClient } from "@/lib/supabase/server";
+import { CharacterCard } from "@/components/character/character-card";
 
 export default async function NewChatPage() {
     const supabase = await createSupabaseServerClient();
@@ -16,17 +17,7 @@ export default async function NewChatPage() {
 
             <div className="grid grid-cols-2 gap-4">
                 {characters?.map((char) => (
-                    <div
-                        key={char.id}
-                        className="border rounded-xl p-4 hover:bg-muted cursor-pointer transition"
-                    >
-                        <img
-                            src={char.avatar_url}
-                            alt={char.name}
-                            className="w-16 h-16 rounded-full mb-3"
-                        />
-                        <h2 className="font-medium">{char.name}</h2>
-                    </div>
+                    <CharacterCard key={char.id} character={char} />
                 ))}
             </div>
         </div>
