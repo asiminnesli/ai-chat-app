@@ -1,5 +1,5 @@
 import { createSupabaseServerClient } from "@/lib/supabase/server";
-import { CharacterCard } from "@/components/character/character-card";
+import ChatbotCard from "@/components/character/chatbotChacters";
 
 export default async function NewChatPage() {
     const supabase = await createSupabaseServerClient();
@@ -15,9 +15,9 @@ export default async function NewChatPage() {
                 Choose your AI character
             </h1>
 
-            <div className="grid grid-cols-2 gap-4">
+            <div className="flex flex-wrap gap-4">
                 {characters?.map((char) => (
-                    <CharacterCard key={char.id} character={char} />
+                    <ChatbotCard key={char.id} chatbot={char} />
                 ))}
             </div>
         </div>

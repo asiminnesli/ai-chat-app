@@ -1,27 +1,24 @@
-import { Button } from "@/components/ui/button";
-import Link from "next/link";
+import ChatbotChacters from "@/components/character/chatbotChacters";
+import { supabase } from "@/lib/supabase/client";
 
-export default function Home() {
+export default async function Home() {
+
+
+  const { data: chatbots } = await supabase
+    .from("characters")
+    .select("*");
+
   return (
-    <div className="p-6 space-y-4">
-      <h1 className="text-3xl font-bold">AI Chat</h1>
-
-      <div className="flex gap-4">
-        <Link
-          href="/new"
-          className="px-4 py-2 bg-black text-white rounded"
-        >
-          New Chat
-        </Link>
-
-        <Link
-          href="/chats"
-          className="px-4 py-2 border rounded"
-        >
-          Chats
-        </Link>
+    <>
+      <span className="bg-white text-2xl text-center font-bold px-6 py-4 block">
+        Our AI Chatbots
+      </span>
+      <div className="flex flex-row flex-wrap gap-6 p-6 justify-between ">
+        {chatbots && chatbots.map((chatbot: any) => (
+          <ChatbotChacters chatbot={chatbot} key={chatbot.id} />
+        ))}
       </div>
-    </div>
+    </>
   );
 }
 

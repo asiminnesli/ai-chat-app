@@ -1,26 +1,37 @@
 "use client";
 
 import { supabase } from "@/lib/supabase/client";
-import { Button } from "@/components/ui/button";
+import { useRouter } from "next/navigation";
 
 export default function LoginPage() {
-    const signInWithGoogle = async () => {
+    const router = useRouter();
+
+    const handleGoogleLogin = async () => {
         await supabase.auth.signInWithOAuth({
             provider: "google",
             options: {
-                redirectTo: `${location.origin}/auth/callback`,
+                redirectTo: `${window.location.origin}`,
             },
         });
     };
 
     return (
-        <div className="flex min-h-screen items-center justify-center">
-            <div className="flex flex-col items-center gap-6">
-                <h1 className="text-2xl font-semibold">AI Chat</h1>
+        <div className="min-h-screen flex items-center justify-center bg-slate-100 p-6">
+            <div className="w-full max-w-sm rounded-2xl bg-white shadow-xl p-6 text-center">
+                <h1 className="text-xl font-semibold text-slate-900">Welcome back</h1>
+                <p className="mt-1 text-sm text-slate-500">Sign in to continue</p>
 
-                <Button onClick={signInWithGoogle}>
-                    Sign in with Google
-                </Button>
+                <button
+                    onClick={handleGoogleLogin}
+                    className="mt-6 w-full flex items-center justify-center gap-3 rounded-xl border border-slate-300 bg-white py-2.5 text-sm font-medium text-slate-700 hover:bg-slate-50 transition"
+                >
+                    <img
+                        src="https://www.svgrepo.com/show/475656/google-color.svg"
+                        alt="Google"
+                        className="h-5 w-5"
+                    />
+                    Continue with Google
+                </button>
             </div>
         </div>
     );
