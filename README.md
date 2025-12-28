@@ -2,6 +2,10 @@
 
 Modern bir yapay zeka sohbet uygulaması. Next.js 16, Supabase ve Groq API kullanılarak geliştirilmiştir. Kullanıcılar farklı AI karakterleri ile sohbet edebilir, kod blokları paylaşabilir ve sohbet geçmişlerini yönetebilir.
 
+## 🚀 Canlı Demo
+
+**[Uygulamayı Test Et →](https://ai-chat-mrzr5rpbc-asims-projects-123f39aa.vercel.app/)**
+
 ## 🎥 Demo Video
 
 [![AI Chat App Demo](https://img.youtube.com/vi/3r6rG6-uoqY/maxresdefault.jpg)](https://youtu.be/3r6rG6-uoqY)
