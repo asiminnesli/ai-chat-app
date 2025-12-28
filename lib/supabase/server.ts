@@ -34,8 +34,7 @@ export async function createSupabaseReadClient() {
             cookies: {
                 get(name: string) {
                     return cookieStore.get(name)?.value;
-                },
-                // 🚫 set / remove YOK
+                }
             },
         }
     );

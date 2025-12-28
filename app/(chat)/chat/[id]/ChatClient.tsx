@@ -1,5 +1,8 @@
 "use client";
 
+import { ChatBubble } from "@/components/chat/bubble";
+import { ChatInput } from "@/components/chat/ChatInput";
+import { supabase } from "@/lib/supabase/client";
 import { useState, useRef, useEffect } from "react";
 
 type Message = {
@@ -38,7 +41,12 @@ export default function ChatClient({
 
         const userMsg: Message = { role: "user", content: input };
 
-        // ⚡ optimistic UI
+        await supabase.from("messages").insert({
+            chat_id: chatId,
+            role: "user",
+            content: input,
+        });
+
         setMessages((m) => [...m, userMsg]);
         setInput("");
 
@@ -47,7 +55,7 @@ export default function ChatClient({
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
                 chatId,
-                messages: [...messages, userMsg], // 🔥 GROQ minimum 1 mesaj ister
+                messages: [...messages, userMsg],
             }),
         });
 
@@ -59,16 +67,27 @@ export default function ChatClient({
         let aiMsg: Message = { role: "assistant", content: "" };
         setMessages((m) => [...m, aiMsg]);
 
+        let fullContent = "";
+
         while (true) {
             const { value, done } = await reader.read();
             if (done) break;
 
-            aiMsg.content += decoder.decode(value);
-            setMessages((m) => [...m.slice(0, -1), aiMsg]);
+            fullContent += decoder.decode(value, { stream: true });
+
+            setMessages((prev) => {
+                const updated = [...prev];
+                updated[updated.length - 1] = {
+                    role: "assistant",
+                    content: fullContent,
+                };
+                return updated;
+            });
+
+            await new Promise((r) => setTimeout(r, 15));
         }
     };
 
-    /* ⬇️ AUTO SCROLL */
     useEffect(() => {
         bottomRef.current?.scrollIntoView({ behavior: "smooth" });
     }, [messages]);
@@ -77,27 +96,17 @@ export default function ChatClient({
         <div className="flex flex-col h-screen">
             <div className="flex-1 overflow-y-auto p-4 space-y-3">
                 {messages.map((msg, i) => (
-                    <div key={i}>
-                        <b>{msg.role}:</b> {msg.content}
-                    </div>
+                    <ChatBubble key={i} message={msg} isUser={msg.role === "assistant"} />
+
                 ))}
                 <div ref={bottomRef} />
             </div>
 
-            <div className="p-4 border-t flex gap-2">
-                <input
-                    value={input}
-                    onChange={(e) => setInput(e.target.value)}
-                    className="flex-1 border rounded px-3 py-2"
-                    placeholder="Type a message..."
-                />
-                <button
-                    onClick={sendMessage}
-                    className="px-4 py-2 bg-black text-white rounded"
-                >
-                    Send
-                </button>
-            </div>
+            <ChatInput
+                value={input}
+                onChange={setInput}
+                onSend={sendMessage}
+            />
         </div>
     );
 }
