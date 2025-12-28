@@ -2,6 +2,7 @@
 
 import { ChatBubble } from "@/components/chat/bubble";
 import { ChatInput } from "@/components/chat/ChatInput";
+import { Skeleton } from "@/components/chat/skeleton";
 import { supabase } from "@/lib/supabase/client";
 import Link from "next/link";
 import { useState, useRef, useEffect } from "react";
@@ -19,6 +20,7 @@ export default function ChatClient({
     chatId: string;
     initialMessages?: Message[];
 }) {
+    const [loading, setLoading] = useState(true);
     const [messages, setMessages] = useState<Message[]>(initialMessages);
     const [character, setCharacter] = useState<any | null>(null);
     const [input, setInput] = useState("");
@@ -41,7 +43,6 @@ export default function ChatClient({
     }, [chatId]);
 
     const getCharacter = async () => {
-        console.log('chat_id', chatId);
         const { data: chat, error } = await supabase
             .from("chats")
             .select(`
@@ -111,7 +112,11 @@ export default function ChatClient({
     };
 
     useEffect(() => {
+        if (messages) {
+            setLoading(false);
+        }
         bottomRef.current?.scrollIntoView({ behavior: "smooth" });
+
     }, [messages]);
 
     return (
@@ -147,10 +152,22 @@ export default function ChatClient({
 
             </div>
             <div className="flex-1 overflow-y-auto p-4 space-y-3">
-                {messages.map((msg, i) => (
-                    <ChatBubble key={i} message={msg} isUser={msg.role === "assistant"} />
-
-                ))}
+                {loading ? (
+                    <Skeleton />
+                ) : (
+                    messages.length === 0 ? (
+                        <div className="text-center text-gray-500 mt-10">
+                            No messages yet. Start the conversation!
+                        </div>
+                    ) :
+                        messages.map((msg, i) => (
+                            <ChatBubble
+                                key={i}
+                                message={msg}
+                                isUser={msg.role === "assistant"}
+                            />
+                        ))
+                )}
                 <div ref={bottomRef} />
             </div>
 
