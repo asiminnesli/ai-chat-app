@@ -4,7 +4,7 @@ Modern bir yapay zeka sohbet uygulaması. Next.js 16, Supabase ve Groq API kulla
 
 ## 🚀 Canlı Demo
 
-**[Uygulamayı Test Et →](https://ai-chat-mrzr5rpbc-asims-projects-123f39aa.vercel.app/)**
+**[Uygulamayı Test Et →](https://ai-chat-app-five-iota.vercel.app/)**
 
 ## 🎥 Demo Video
 
